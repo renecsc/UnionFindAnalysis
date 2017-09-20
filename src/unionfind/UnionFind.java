@@ -5,44 +5,61 @@
  */
 package unionfind;
 
-import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileNotFoundException;
-import java.io.FileReader;
 import java.io.IOException;
 import java.util.Scanner;
+import javax.swing.JFileChooser;
+import javax.swing.JFrame;
+import javax.swing.filechooser.FileNameExtensionFilter;
 
 /**
  *
  * @author renecsc
  */
-public class UnionFind {
-
+public class UnionFind extends JFrame{
+    private File file;
     /**
      * @param args the command line arguments
      */
     public static void main(String[] args) throws FileNotFoundException, IOException {
         
-        File file = new File("largeUF.txt");
-        
         UnionFind uf = new UnionFind();
         
-        uf.ejecutarQuickFind(file);
-        uf.ejecutarQuickUnion(file);
+        System.out.println("Ejecución de QuickFind: ");
+        uf.ejecutarQuickFind();
+        System.out.println("Ejecución de QuickUnion: ");
+        uf.ejecutarQuickUnion();
     }
-    
+    /**
+     * Constructor
+     * inicia una ventana de dialogo para seleccionar el archivo a leer.
+     */
     public UnionFind(){
+        JFileChooser chooser = new JFileChooser();
         
+        chooser.setFileSelectionMode(JFileChooser.FILES_ONLY);
+        chooser.setMultiSelectionEnabled(false);
+        FileNameExtensionFilter filter = new FileNameExtensionFilter("Archivo de uniones txt", "txt");
+        
+        chooser.setFileFilter(filter);
+        int returnVal = chooser.showOpenDialog(this);
+        if(returnVal == JFileChooser.APPROVE_OPTION){
+            this.file = chooser.getSelectedFile();
+        }
     }
-    
-    public void ejecutarQuickUnion(File file) throws FileNotFoundException{
+    /**
+     * metodo para ejecutar el algoritmo de QuickUnion
+     * @throws FileNotFoundException 
+     */
+    public void ejecutarQuickUnion() throws FileNotFoundException{
         
         int n = 1;
         while(n <= Math.pow(2, 20)){
             long totalTime = 0;
             long startTime = System.currentTimeMillis();
             
-            Scanner sc = new Scanner(file);
+            Scanner sc = new Scanner(this.file);
             
             int size = sc.nextInt();
             QuickUnion qu = new QuickUnion(size);
@@ -54,23 +71,27 @@ public class UnionFind {
                 
                 if(!qu.connected(p, q)){
                     qu.union(p, q);
-                    System.out.println(p + " " + q);
+                    //System.out.println(p + " " + q);
                 }
                 i+=2;
             }
             totalTime = System.currentTimeMillis()-startTime;
-            System.out.println("Tiempo con N = " + n + ": " + totalTime);
+            //totalTime = totalTime/1000;
+            System.out.println("Tiempo con N = " + n + ": " + totalTime + " milisegundos");
             n = n*2;
         }
     }
-    
-    public void ejecutarQuickFind(File file) throws FileNotFoundException{
+    /**
+     * metodo para ejecutar el algoritmo de QuickFind
+     * @throws FileNotFoundException 
+     */
+    public void ejecutarQuickFind() throws FileNotFoundException{
         int n = 1;
         while(n <= Math.pow(2, 20)){
             long totalTime = 0;
             long startTime = System.currentTimeMillis();
             
-            Scanner sc = new Scanner(file);
+            Scanner sc = new Scanner(this.file);
             
             int size = sc.nextInt();
             QuickFind qf = new QuickFind(size);
@@ -82,12 +103,13 @@ public class UnionFind {
                 
                 if(!qf.connected(p, q)){
                     qf.union(p, q);
-                    System.out.println(p + " " + q);
+                    //System.out.println(p + " " + q);
                 }
                 i+=2;
             }
             totalTime = System.currentTimeMillis()-startTime;
-            System.out.println("Tiempo con N = " + n + ": " + totalTime);
+            //totalTime = totalTime/1000;
+            System.out.println("Tiempo con N = " + n + ": " + totalTime + " milisegundos");
             n = n*2;
         }
     }
